@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿1. Устанавливаем docker
+=======
+1. Устанавливаем docker
+>>>>>>> b64a9ca3252d437c5427dfbed2544d292118a45f
 
 curl -fsSL get.docker.com -o get-docker.sh
 sh get-docker.sh
@@ -29,4 +33,9 @@ docker run -d -P --name=nginx nginx:LH
 8. Загружаем страницы LH1.com и LH2.com для проверки
 
 curl http://LH1.com
+<<<<<<< HEAD
 curl http://LH2.com
+=======
+curl http://LH2.com
+Но curl http://LH1.com и curl http://LH2.com не отображаются
+>>>>>>> b64a9ca3252d437c5427dfbed2544d292118a45f
