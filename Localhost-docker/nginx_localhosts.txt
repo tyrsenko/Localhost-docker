@@ -1,146 +1,30 @@
-# Установка docker
+﻿1. Установка docker
 curl -fsSL get.docker.com -o get-docker.sh
 sh get-docker.sh 
 
-#
+2. Добавляем пользователя user в группу docker   
 sudo usermod -aG docker user
 
-#dockerfile
-FROM nginx:1.12
-MAINTAINER Tonya
+3. Создаем Dockerfile
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y nginx wget curl vim
+4. Cоздаем конфигурационные файлы для добавления в образ:
 
-ADD ./LH1/ /var/www/LH1.com/public/ 
-ADD ./LH2/ /var/www/LH2.com/public/
-ADD ./nginxconf/ /etc/nginx/sites-available/
-COPY ./host/ /etc/
+*HTML страница LH1
+*HTML страница LH2
+*конфиг. файл LH1
+*конфиг. файл LH2
 
-RUN ln -s /etc/nginx/sites-available/LH1.com /etc/nginx/sites-enabled/
-RUN ln -s /etc/nginx/sites-available/LH2.com /etc/nginx/sites-enabled/
 
-EXPOSE 80
-
-##конфигурационные файлы для добавления в образ
-
-#HTML страница LH1
-html_LH1
-
-<HTML>
-<HEAD>
-</HEAD>
-<BODY>
-<h1>The first local host</h1>
-</BODY>
-</HTML>
-
-#HTML страница LH2
-html_LH2
-
-<HTML>
-<HEAD>
-</HEAD>
-<BODY>
-<h1>The second local host</h1>
-try_files $uri $uri/ =404;
-</BODY>
-</HTML>
-
-#конфиг. файл LH1
-nginxconf_LH1
-
-server {
-listen 80;
-root /var/www/LH1.com/public;
-index index.html index.htm;
-server_name LH1.com www.LH1.com;
-location / {
-try_files $uri $uri/ =404;
-}
-}
-
-#конфиг. файл LH2
-nginxconf_LH2
-
-server {
-listen 80;
-root /var/www/LH2.com/public;
-index index.html index.htm;
-server_name LH2.com www.LH2.com;
-location / {
-try_files $uri $uri/ =404;
-}
-}
-
-#создание образа
+5. Создаем образ
 docker build -t nginx:LH ~/dockerfile/
 
-#создание контенйнера
+6.Запускаем контенйнер
 docker run -d -P --name=nginx nginx:LH
 
-#загрузка страницы
-  curl http://LH1.com
-  curl http://LH1.com
-  curl http://localhost:32768
-  
-У меня отображается страница по умолчанию
-
-#Для проверки я зашла внутрь контейнера
-  docker exec -it e3bba75406a9 /bin/bash 
-
-  #Конфигурация ndinx
-user  nginx;
-worker_processes  1;
-error_log  /var/log/nginx/error.log warn;
-pid        /var/run/nginx.pid;
-events {
-    worker_connections  1024;
-}
-http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-    access_log  /var/log/nginx/access.log  main;
-    sendfile        on;
-    #tcp_nopush     on;
-    keepalive_timeout  65;
-    #gzip  on;
-    include /etc/nginx/conf.d/*.conf;
-    include /etc/nginx/sites-enabled/*;  
-}  
-
- #Удалила страницы по умолчанию
-  cd /usr/share/nginx/html/
- 
- #Удалила конф.файл по умолчанию
- /etc/nginx/conf.d/default.conf
- 
- #Добавила LH1.com www.LH1.com и LH2.com www.LH2.com в конф.файл etc/hosts 
-127.0.0.1       localhost
-::1     localhost ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-172.17.0.2      ade40cbb1556
+7.Добавляем LH1.com www.LH1.com и LH2.com www.LH2.com в конф.файл etc/hosts на локальном компьютере
 172.17.0.2      LH1.com www.LH1.com
 172.17.0.2      LH2.com www.LH2.com
 
-#Добавила LH1.com www.LH1.com и LH2.com www.LH2.com в конф.файл etc/hosts 
-127.0.0.1       localhost
-
-#Выполнила nginx -s reload
-
-#В итоге у меня отображается 
-curl http://localhost:32768
-<HTML>
-<HEAD>
-</HEAD>
-<BODY>
-<h1>The first local host</h1>
-</BODY>
-</HTML>
-
-Но curl http://LH1.com и curl http://LH2.com не отображаются
+8.Загружаем страницы LH1.com и LH2.com для проверки
+  curl http://LH1.com
+  curl http://LH2.com
