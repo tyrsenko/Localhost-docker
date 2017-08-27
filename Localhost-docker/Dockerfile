@@ -15,7 +15,4 @@ RUN mkdir /etc/nginx/sites-enabled/
 RUN ln -s /etc/nginx/sites-available/LH1.com /etc/nginx/sites-enabled/
 RUN ln -s /etc/nginx/sites-available/LH2.com /etc/nginx/sites-enabled/
 
-RUN echo "172.17.0.2	LH1.com www.LH1.com" >> /etc/hosts
-RUN echo "172.17.0.2	LH1.com www.LH1.com" >> /etc/hosts
-
 EXPOSE 80
