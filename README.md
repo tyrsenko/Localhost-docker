@@ -1,5 +1,5 @@
 ## Localhost-docker
-#### 1. Установка docker
+#### 1. Устанавливаем docker
  * curl -fsSL get.docker.com -o get-docker.sh
  * sh get-docker.sh 
 
