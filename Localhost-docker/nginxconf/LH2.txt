@@ -1,0 +1,9 @@
+server {
+listen 80;
+root /var/www/LH2.com/public;
+index index.html index.htm;
+server_name LH2.com www.LH2.com;
+location / {
+try_files $uri $uri/ =404;
+}
+}
