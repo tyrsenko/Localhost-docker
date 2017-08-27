@@ -1,20 +1,20 @@
 "# localhost-docker" 
 ## Localhost-docker
 #### 1. Установка docker
-curl -fsSL get.docker.com -o get-docker.sh
-sh get-docker.sh 
+ * curl -fsSL get.docker.com -o get-docker.sh
+ * sh get-docker.sh 
 
 #### 2. Добавляем пользователя user в группу docker   
 sudo usermod -aG docker user
 
-#### 3. Создаем Dockerfile
+#### 3. Создаем Dockerfile (вложенный файл)
 
 #### 4. Cоздаем конфигурационные файлы для добавления в образ:
 
-* HTML страница LH1
-* HTML страница LH2
-* конфиг. файл LH1
-* конфиг. файл LH2
+* HTML страница LH1 (вложенный файл)
+* HTML страница LH2 (вложенный файл)
+* конфиг. файл LH1 (вложенный файл)
+* конфиг. файл LH2 (вложенный файл)
 
 
 #### 5. Создаем образ
