@@ -17,7 +17,7 @@ sudo usermod -aG docker user
 
 
 #### 5. Создаем образ
-docker build -t nginx:LH ~/dockerfile/
+docker build -t nginx:LH .
 
 #### 6. Запускаем контейнер
 docker run -d -P --name=nginx nginx:LH
