@@ -24,8 +24,8 @@ docker build -t nginx:LH ~/dockerfile/
 docker run -d -P --name=nginx nginx:LH
 
 #### 7. Добавляем LH1.com (www.LH1.com) и LH2.com (www.LH2.com) в конф.файл etc/hosts на локальном компьютере
-172.17.0.2      LH1.com www.LH1.com
-172.17.0.2      LH2.com www.LH2.com
+ * 172.17.0.2      LH1.com www.LH1.com
+ * 172.17.0.2      LH2.com www.LH2.com
 
 #### 8. Загружаем страницы LH1.com и LH2.com для проверки
   curl (http://LH1.com)
