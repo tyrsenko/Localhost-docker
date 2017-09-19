@@ -1,0 +1,67 @@
+echo "Your choice: $Node"
+if [ $Node = "Node1" ]; then
+echo "Backup from $Node to Node2"
+
+#Делаем дамп выбранной БД на первой ноде
+
+PGPASSWORD=$PASS pg_dump -h 172.31.111.55 -p 32778 -U postgres -d $TablesDB1 > ./temp.backup
+size=`ls -al temp.backup | cut -f 5 -d \ `
+zero=0
+ if [ "$size" -gt "$zero" ]; then
+echo "File size: $size"
+
+#Проверяем наличие БД на второй ноде для избежания конфликтов во время восстановления,
+если БД с таким именем существует, делаем бекап и удаление БД на второй ноде, потом заново 
+создаем БД и восстанавливаем данные с бекапа созданного на первой ноде.
+
+  if checkdb=`PGPASSWORD=$PASS psql -h 172.31.111.55 -p 32779 -U postgres -l | cut -f 1 -d \| | grep -w $TablesDB2` >  /dev/null; then
+PGPASSWORD=$PASS pg_dump -h 172.31.111.55 -p 32779 -U postgres -d $TablesDB2 > ./$TablesDB2.backup
+PGPASSWORD=$PASS dropdb -h 172.31.111.55 -p 32779 -U postgres -e $TablesDB2
+PGPASSWORD=$PASS createdb -p 32779 -h 172.31.111.55 -U postgres -e $TablesDB2
+PGPASSWORD=$PASS psql -h 172.31.111.55 -p 32779 -U postgres -d $TablesDB2 < ./temp.backup
+
+#Если БД с таким именем на второй ноде не существует, создаем БД и восстанавливаем данные с бекапа
+созданного на первой ноде.
+
+   else
+PGPASSWORD=$PASS createdb -p 32779 -h 172.31.111.55 -U postgres -e $TablesDB2
+PGPASSWORD=$PASS psql -h 172.31.111.55 -p 32779 -U postgres -d $TablesDB2 < ./temp.backup 
+  fi
+ else
+echo "Error! File is empty" 
+ fi
+rm ./temp.backup
+elif [ $Node = "Node2" ]; then
+echo "Backup from $Node to Node1"
+
+#Делаем дамп выбранной БД на второй ноде
+
+PGPASSWORD=$PASS pg_dump -h 172.31.111.55 -p 32779 -U postgres -d $TablesDB2 > ./temp.backup
+size=`ls -al temp.backup | cut -f 5 -d \ `
+zero=0
+ if [ "$size" -gt "$zero" ]; then
+echo "File size: $size"
+
+#Проверяем наличие БД на первой ноде для избежания конфликтов во время восстановления,
+если БД с таким именем существует, делаем бекап и удаление БД на первой ноде, потом заново 
+создаем БД и восстанавливаем данные с бекапа созданного на второй ноде.
+
+ if checkdb=`PGPASSWORD=$PASS psql -h 172.31.111.55 -p 32778 -U postgres -l | cut -f 1 -d \| | grep -w $TablesDB1` >  /dev/null; then
+PGPASSWORD=$PASS pg_dump -h 172.31.111.55 -p 32778 -U postgres -d $TablesDB1 > ./$TablesDB1.backup
+PGPASSWORD=$PASS dropdb -h 172.31.111.55 -p 32778 -U postgres -e $TablesDB1
+PGPASSWORD=$PASS createdb -p 32778 -h 172.31.111.55 -U postgres -e $TablesDB1
+PGPASSWORD=$PASS psql -h 172.31.111.55 -p 32778 -U postgres -d $TablesDB1 < ./temp.backup 
+  else
+
+
+#Если БД с таким именем на первой ноде не существует, создаем БД и восстанавливаем данные с бекапа
+созданного на второй ноде.
+
+PGPASSWORD=$PASS createdb -p 32778 -h 172.31.111.55 -U postgres -e $TablesDB1
+PGPASSWORD=$PASS psql -h 172.31.111.55 -p 32778 -U postgres -d $TablesDB1 < ./temp.backup 
+  fi 
+ else
+echo "Error! File is empty" 
+ fi
+rm ./temp.backup
+fi
